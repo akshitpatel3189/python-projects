@@ -1,97 +1,50 @@
+from tkinter import *
+from tkinter import messagebox
+import random as r
 
-#Implementation of Two Player Tic-Tac-Toe game in Python.
+def button(frame):
+    b=Button(frame,padx=1,bg="yellow",width=3,text="   ",font=('arial',60,'bold'),relief="sunken",bd=10)
+    return b
+def change_a():
+    global a
+    for i in ['O','X']:
+        if not(i==a):
+            a=i
+            break
+def reset():
+    global a
+    for i in range(3):
+        for j in range(3):
+                b[i][j]["text"]=" "
+                b[i][j]["state"]=NORMAL
+    a=r.choice(['O','X'])
+def check():
+    for i in range(3):
+            if(b[i][0]["text"]==b[i][1]["text"]==b[i][2]["text"]==a or b[0][i]["text"]==b[1][i]["text"]==b[2][i]["text"]==a):
+                    messagebox.showinfo("Congrats!!","'"+a+"' has won")
+                    reset()
+    if(b[0][0]["text"]==b[1][1]["text"]==b[2][2]["text"]==a or b[0][2]["text"]==b[1][1]["text"]==b[2][0]["text"]==a):
+        messagebox.showinfo("Congrats!!","'"+a+"' has won")
+        reset()   
+    elif(b[0][0]["state"]==b[0][1]["state"]==b[0][2]["state"]==b[1][0]["state"]==b[1][1]["state"]==b[1][2]["state"]==b[2][0]["state"]==b[2][1]["state"]==b[2][2]["state"]==DISABLED):
+        messagebox.showinfo("Tied!!","The match ended in a draw")
+        reset()
+def click(row,col):
+        b[row][col].config(text=a,state=DISABLED,disabledforeground=colour[a])
+        check()
+        change_a()
+        label.config(text=a+"'s Chance")
 
-theBoard = {'7': ' ' , '8': ' ' , '9': ' ' ,
-            '4': ' ' , '5': ' ' , '6': ' ' ,
-            '1': ' ' , '2': ' ' , '3': ' ' }
-
-board_keys = []
-
-for key in theBoard:
-    board_keys.append(key)
-
-def printBoard(board):
-    print(board['7'] + '|' + board['8'] + '|' + board['9'])
-    print('-+-+-')
-    print(board['4'] + '|' + board['5'] + '|' + board['6'])
-    print('-+-+-')
-    print(board['1'] + '|' + board['2'] + '|' + board['3'])
-    
-def game():
-
-    turn = 'X'
-    count = 0
-
-    for i in range(10):
-        printBoard(theBoard)
-        print("It's your turn, " + turn + " Move to which place?")
-
-        move = input()        
-
-        if theBoard[move] == ' ':
-            theBoard[move] = turn
-            count += 1
-        else:
-            print("That place is already filled.\nMove to which place?")
-            continue
-
-        if count >= 5:
-            if theBoard['7'] == theBoard['8'] == theBoard['9'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")                
-                break
-            elif theBoard['4'] == theBoard['5'] == theBoard['6'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['1'] == theBoard['2'] == theBoard['3'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['1'] == theBoard['4'] == theBoard['7'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['2'] == theBoard['5'] == theBoard['8'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['3'] == theBoard['6'] == theBoard['9'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break 
-            elif theBoard['7'] == theBoard['5'] == theBoard['3'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break
-            elif theBoard['1'] == theBoard['5'] == theBoard['9'] != ' ':
-                printBoard(theBoard)
-                print("\nGame Over.\n")                
-                print(" **** " +turn + " won. ****")
-                break 
-
-        if count == 9:
-            print("\nGame Over.\n")                
-            print("It's a Tie!!")
-
-        if turn =='X':
-            turn = 'O'
-        else:
-            turn = 'X'        
-    
-    restart = input("Do want to play Again?(y/n)")
-    if restart == "y" or restart == "Y":  
-        for key in board_keys:
-            theBoard[key] = " "
-
-        game()
-
-if __name__ == "__main__":
-    game()
+root=Tk()
+root.title("Tic-Tac-Toe")
+a=r.choice(['O','X'])
+colour={'O':"red",'X':"blue"}
+b=[[],[],[]]
+for i in range(3):
+        for j in range(3):
+                b[i].append(button(root))
+                b[i][j].config(command= lambda row=i,col=j:click(row,col))
+                b[i][j].grid(row=i,column=j)
+label=Label(text=a+"'s Chance",font=('arial',20,'bold'))
+label.grid(row=3,column=0,columnspan=3)
+root.mainloop()
